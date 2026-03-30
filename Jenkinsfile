@@ -1,38 +1,33 @@
 pipeline {
     agent any
 
-    tools {
-        // Ensure you have JDK 8 configured in Jenkins (Manage Jenkins -> Global Tool Configuration)
-        jdk 'JDK 8' 
-    }
+    // Note: If you configured the 'JDK 8' tool in the previous step, 
+    // you can add the 'tools { jdk "JDK 8" }' block back right here.
 
     stages {
         stage('Checkout') {
             steps {
-                // Checks out the source code from the configured repository
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                // Make the Maven wrapper executable and build the application
-                sh 'chmod +x mvnw'
-                sh './mvnw clean install -DskipTests'
+                // Use 'bat' instead of 'sh', and call the Windows batch script 'mvnw.cmd'
+                // We also don't need the 'chmod +x' command on Windows
+                bat 'mvnw.cmd clean install -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                // Run the Spring Boot tests
-                sh './mvnw test'
+                bat 'mvnw.cmd test'
             }
         }
     }
 
     post {
         always {
-            // Optional: Archive the built JAR file so it can be downloaded from Jenkins
             archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
         }
     }
