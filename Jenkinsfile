@@ -1,8 +1,10 @@
 pipeline {
     agent any
 
-    // Note: If you configured the 'JDK 8' tool in the previous step, 
-    // you can add the 'tools { jdk "JDK 8" }' block back right here.
+    tools {
+        // This MUST match the name exactly as it appears in your screenshot
+        maven 'Maven-3.9.12' 
+    }
 
     stages {
         stage('Checkout') {
@@ -13,15 +15,14 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Use 'bat' instead of 'sh', and call the Windows batch script 'mvnw.cmd'
-                // We also don't need the 'chmod +x' command on Windows
-                bat 'mvnw.cmd clean install -DskipTests'
+                // Using standard 'mvn' command
+                bat 'mvn clean install -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvnw.cmd test'
+                bat 'mvn test'
             }
         }
     }
